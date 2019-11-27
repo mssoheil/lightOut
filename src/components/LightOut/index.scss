@@ -1,0 +1,22 @@
+.lightOut {
+  display: flex;
+  justify-content: center;
+  margin-top: 200px;
+  .inner-wrapper {
+    .lightOut__item {
+      background: rgb(30, 112, 4);
+      cursor: pointer;
+      border-radius: 100%;
+      transition: all 0.3s;
+      margin-right: 10px;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 10px;
+      float: left;
+      &.active {
+        background: rgb(11, 235, 22);
+        transition: all 0.3s;
+      }
+    }
+  }
+}
