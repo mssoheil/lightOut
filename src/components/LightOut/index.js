@@ -6,90 +6,96 @@ function reducer(state, action) {
 }
 const LightOut = () => {
   const initialState = () => ({
-    randomArray: Array(25).fill(false)
+    randomArray: Array(5).fill([])
   });
   const [state, dispatch] = React.useReducer(reducer, initialState());
 
   React.useEffect(() => {
-    randomActive();
+    const newArr = state.randomArray.map((item, index) => {
+      const tempArr = [];
+      for (let i = 0; i < 5; i++) {
+        tempArr[i] = {
+          row: index,
+          col: i,
+          isActivated: false,
+          id: index * 5 + i + 1
+        };
+      }
+      return tempArr;
+    });
+    dispatch({ randomArray: randomActive(newArr) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function randomActive() {
-    const tempArr = state.randomArray;
-
+  function randomActive(array) {
+    const tempArr = array;
+    let activeCounter = 0;
     const finalArray = tempArr.map((item, index) => {
-      return index + 1 === Math.floor(Math.random() * 25) ? true : false;
+      return item.map((innerItem, index) => {
+        if (innerItem.id === Math.floor(Math.random() * 25 + 1)) {
+          innerItem.isActivated = true;
+          activeCounter += 1;
+          return innerItem;
+        }
+        return innerItem;
+      });
     });
-
-    if (finalArray.indexOf(true) === -1) {
-      const temp = finalArray;
-      temp[0] = true;
-      temp[1] = true;
-      dispatch({ randomArray: temp });
-    } else {
-      dispatch({ randomArray: finalArray });
+    if (activeCounter === 0) {
+      finalArray[0][0].isActivated = true;
     }
+
+    return finalArray;
   }
 
-  function changeActiveStates(index) {
+  function changeActiveStates(row, col, index) {
     const tempArr = state.randomArray;
-    tempArr[index - 1] = !tempArr[index - 1];
-    if (index % 5 === 0) {
-      if (index === 5) {
-        tempArr[index - 2] = !tempArr[index - 2];
-        tempArr[index + 4] = !tempArr[index + 4];
-      } else {
-        tempArr[index - 2] = !tempArr[index - 2];
-        tempArr[index + 4] = !tempArr[index + 4];
-      }
-    } else if (index === 1) {
-      tempArr[index] = !tempArr[index];
-      tempArr[index + 4] = !tempArr[index + 4];
-    } else if (index === 21) {
-      tempArr[index] = !tempArr[index];
-    } else if ((index - 1) % 5 === 0) {
-      tempArr[index] = !tempArr[index];
-      tempArr[index - 6] = !tempArr[index - 6];
-      tempArr[index + 4] = !tempArr[index + 4];
-    } else {
-      tempArr[index - 2] = !tempArr[index - 2];
-      tempArr[index] = !tempArr[index];
-      tempArr[index - 6] = !tempArr[index - 6];
-      if (index + 4 < tempArr.length) {
-        tempArr[index + 4] = !tempArr[index + 4];
-      }
+    tempArr[row][col].isActivated = !tempArr[row][col].isActivated;
+    if (col + 1 < 5) {
+      tempArr[row][col + 1].isActivated = !tempArr[row][col + 1].isActivated;
     }
-
-    if (tempArr.indexOf(true) === -1) {
-      window.alert("You won");
+    if (col - 1 > 0) {
+      tempArr[row][col - 1].isActivated = !tempArr[row][col - 1].isActivated;
+    }
+    if (row - 1 > 0) {
+      tempArr[row - 1][col].isActivated = !tempArr[row - 1][col].isActivated;
+    }
+    if (row + 1 < 5) {
+      tempArr[row + 1][col].isActivated = !tempArr[row + 1][col].isActivated;
     }
 
     dispatch({ randomArray: tempArr });
+
+    const checkArr = tempArr.filter(item => {
+      return (
+        item.filter(innerItem => {
+          return innerItem.isActivated;
+        }).length !== 0
+      );
+    });
+    if (checkArr.length === 0) {
+      window.alert("won");
+    }
   }
   return (
     <div className="lightOut">
       <div className="inner-wrapper">
         {state.randomArray.map((item, index) => {
-          if ((index + 1) % 5 === 0) {
-            return (
-              <React.Fragment key={`item_${index}`}>
-                <span
-                  onClick={() => changeActiveStates(index + 1)}
-                  className={`lightOut__item ${item ? "active" : ""}`}
-                ></span>
-                <br />
-              </React.Fragment>
-            );
-          } else {
-            return (
-              <span
-                onClick={() => changeActiveStates(index + 1)}
-                className={`lightOut__item ${item ? "active" : ""}`}
-                key={`item_${index}`}
-              ></span>
-            );
-          }
+          return (
+            <div>
+              {item.map((innerItem, indx) => {
+                return (
+                  <span
+                    onClick={() =>
+                      changeActiveStates(innerItem.row, innerItem.col, indx)
+                    }
+                    className={`lightOut__item ${
+                      innerItem.isActivated ? "active" : ""
+                    }`}
+                  ></span>
+                );
+              })}
+            </div>
+          );
         })}
       </div>
     </div>
