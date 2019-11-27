@@ -53,10 +53,10 @@ const LightOut = () => {
     if (col + 1 < 5) {
       tempArr[row][col + 1].isActivated = !tempArr[row][col + 1].isActivated;
     }
-    if (col - 1 > 0) {
+    if (col - 1 >= 0) {
       tempArr[row][col - 1].isActivated = !tempArr[row][col - 1].isActivated;
     }
-    if (row - 1 > 0) {
+    if (row - 1 >= 0) {
       tempArr[row - 1][col].isActivated = !tempArr[row - 1][col].isActivated;
     }
     if (row + 1 < 5) {
@@ -65,13 +65,10 @@ const LightOut = () => {
 
     dispatch({ randomArray: tempArr });
 
-    const checkArr = tempArr.filter(item => {
-      return (
-        item.filter(innerItem => {
-          return innerItem.isActivated;
-        }).length !== 0
-      );
-    });
+    const checkArr = tempArr.filter(
+      item => item.filter(innerItem => innerItem.isActivated).length !== 0
+    );
+
     if (checkArr.length === 0) {
       window.alert("won");
     }
