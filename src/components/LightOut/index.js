@@ -75,25 +75,35 @@ const LightOut = () => {
   }
   return (
     <div className="lightOut">
-      <div className="inner-wrapper">
-        {state.randomArray.map((item, index) => {
-          return (
-            <div>
-              {item.map((innerItem, indx) => {
-                return (
-                  <span
-                    onClick={() =>
-                      changeActiveStates(innerItem.row, innerItem.col, indx)
-                    }
-                    className={`lightOut__item ${
-                      innerItem.isActivated ? "active" : ""
-                    }`}
-                  ></span>
-                );
-              })}
-            </div>
-          );
-        })}
+      <h3>The lightOut game</h3>
+      <p>
+        the purpose of the game is to turn off all the lights on the board
+        <br />
+        clicking on a square switches its lightning state clicking on a square
+        <br />
+        also switches the state of its North, South, East and West neighbors
+      </p>
+      <div className="wrapper">
+        <div className="inner-wrapper">
+          {state.randomArray.map((item, index) => {
+            return (
+              <div>
+                {item.map((innerItem, indx) => {
+                  return (
+                    <span
+                      onClick={() =>
+                        changeActiveStates(innerItem.row, innerItem.col, indx)
+                      }
+                      className={`lightOut__item ${
+                        innerItem.isActivated ? "active" : ""
+                      }`}
+                    ></span>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
